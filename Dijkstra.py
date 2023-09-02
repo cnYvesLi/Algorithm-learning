@@ -24,44 +24,33 @@ parents["fin"] = None
 processed = []
 
 
-def find_lowest_node(stations):
-    distance = float("inf")
-    node = None
-    if stations:
-        for station in stations:
-            distance_to_station = stations[station]
-            if distance_to_station < distance:
-                distance = distance_to_station
-                node = station
-    return node
+def find_lowest_node(costs):
+    lowest_cost = float("inf")
+    lowest_cost_node = None
+    for node in costs:
+        cost = costs[node]
+        if cost < lowest_cost and node not in processed:
+            lowest_cost = cost
+            lowest_cost_node = node
+    return lowest_cost_node
 
 
-def result(fin):
-    if fin == "start":
-        return "start"
-    else:
-        father = parents[fin]
-        return result(father), fin
-
-
-node = find_lowest_node(graph["start"])
-#print(node)
+node = find_lowest_node(costs)
 
 
 while node:
     cost = costs[node]
     neighbours = graph[node]
     if neighbours:
-        for neighbour in graph[node]:
-            new_cost = graph[node][neighbour] + cost
+        for neighbour in neighbours.keys():
+            new_cost = neighbours[neighbour] + cost
             old_cost = costs[neighbour]
-            if new_cost < old_cost and neighbour not in processed:
+            if new_cost < old_cost:
                 costs[neighbour] = new_cost
                 parents[neighbour] = node
-        processed.append(graph[node])
-    node = find_lowest_node(graph[node])
+    processed.append(node)
+    node = find_lowest_node(costs)
 
 
-print(result("fin"), costs["fin"])
-
-
+#Show the result
+print(processed, costs["fin"])
